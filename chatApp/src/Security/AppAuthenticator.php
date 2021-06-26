@@ -41,8 +41,8 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
             [
                 new CsrfTokenBadge('authenticate', $request->get('_csrf_token')),
             ]
-        );
-    } 
+        ); 
+    }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
