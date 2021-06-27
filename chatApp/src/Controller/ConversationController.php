@@ -12,6 +12,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\WebLink\Link;
 
 /**
  * @Route("/conversations", name="conversations.")
@@ -109,9 +110,12 @@ class ConversationController extends AbstractController
      * @return JsonResponse
      * @throws \Exception
      */
-    public function getConvs() {
+    public function getConvs(Request $request) {
         $conversations = $this->conversationRepository->findConversationsByUser($this->getUser()->getId());
+        
+        $hubUrl = $this->getParameter('mercure.default_hub');
 
+        $this->addLink($request, new Link('mercure', $hubUrl));
         return $this->json($conversations);
     }
 
