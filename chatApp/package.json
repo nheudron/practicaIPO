@@ -22,6 +22,8 @@
         "entities": "^2.2.0",
         "postcss": "^8.3.5",
         "run-parallel": "^1.2.0",
-        "vue-server-renderer": "^2.6.14"
+        "vue-router": "^3.5.2",
+        "vue-server-renderer": "^2.6.14",
+        "vuex": "^3.6.2"
     }
 }

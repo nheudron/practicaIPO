@@ -4,7 +4,7 @@
             <!-- Users box-->
            <Left />
             <!-- Chat Box-->
-           <Right />
+           <router-view :key="$route.fullPath"></router-view>
         </div>
     </div>
 
