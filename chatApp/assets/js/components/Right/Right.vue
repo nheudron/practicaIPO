@@ -33,7 +33,14 @@
                 .then(() => {
                     this.scrollDown();
                 })
-        }
+        },
+        watch: {
+            MESSAGES: function (val) {
+                this.$nextTick(() => {
+                    this.scrollDown();
+                })
+            }
+        },
     }
 </script>
 
