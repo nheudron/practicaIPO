@@ -11,12 +11,16 @@
 </template>
 
 <script>
+    import {mapGetters} from 'vuex';
     import Message from "./Message";
-    import Input from "./Input.vue";
+    import Input from "./Input";
     export default {
-        components: {Message, Input}, 
+        data: () => ({
+            eventSource: null
+        }),
+        components: {Message, Input},
         computed: {
-            //...mapGetters(["HUBURL"]),
+            ...mapGetters(["HUBURL"]),
             MESSAGES() {
                 return this.$store.getters.MESSAGES(this.$route.params.id);
             }
@@ -25,13 +29,28 @@
             scrollDown() {
                 this.$refs.messagesBody.scrollTop = this.$refs.messagesBody.scrollHeight;
             },
+            addMessage(data) {
+                this.$store.commit("ADD_MESSAGE", {
+                    conversationId: this.$route.params.id,
+                    payload: data
+                })
+            }
         },
-        mounted(){
-            console.log(this.$route.params.id)
-
+        mounted() {
+            const vm = this;
             this.$store.dispatch("GET_MESSAGES", this.$route.params.id)
                 .then(() => {
                     this.scrollDown();
+                    if (this.eventSource === null) {
+                        let url = new URL(this.HUBURL);
+                        url.searchParams.append('topic', `/conversations/${this.$route.params.id}`)
+                        this.eventSource = new EventSource(url, {
+                            withCredentials: true
+                        })
+                        this.eventSource.onmessage = function (event) {
+                            vm.addMessage(JSON.parse(event.data))
+                        }
+                    }
                 })
         },
         watch: {
@@ -41,7 +60,10 @@
                 })
             }
         },
+        beforeDestroy() {
+            if (this.eventSource instanceof EventSource) {
+                this.eventSource.close();
+            }
+        }
     }
 </script>
-
- 
